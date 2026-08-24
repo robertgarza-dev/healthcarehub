@@ -1,0 +1,39 @@
+# JetBrains
+.idea/
+*.sln.iml
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+Debug/
+Release/
+x64/
+x86/
+
+# Visual Studio
+.vs/
+
+# Node / React
+node_modules/
+dist/
+.vite/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+appsettings.Local.json
+
+# Logs
+*.log
+logs/
+
+# OS
+Thumbs.db
+.DS_Store
