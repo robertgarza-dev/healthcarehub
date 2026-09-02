@@ -37,3 +37,6 @@ logs/
 # OS
 Thumbs.db
 .DS_Store
+
+# Local source data
+data/
