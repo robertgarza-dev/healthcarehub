@@ -1,0 +1,291 @@
+USE HealthcareHub;
+GO
+
+INSERT INTO stage.MedicareMonthlyEnrollment
+(
+    MedicareMonthlyEnrollmentRawId,
+    PipelineRunId,
+
+    ReportingYear,
+    ReportingMonth,
+    ReportingPeriodStart,
+    IsAnnualSummary,
+
+    GeographyLevel,
+    StateAbbreviation,
+    StateName,
+    CountyName,
+    GeographyFips,
+
+    TOT_BENES,
+    ORGNL_MDCR_BENES,
+    MA_AND_OTH_BENES,
+
+    AGED_TOT_BENES,
+    AGED_ESRD_BENES,
+    AGED_NO_ESRD_BENES,
+
+    DSBLD_TOT_BENES,
+    DSBLD_ESRD_AND_ESRD_ONLY_BENES,
+    DSBLD_NO_ESRD_BENES,
+
+    MALE_TOT_BENES,
+    FEMALE_TOT_BENES,
+
+    WHITE_TOT_BENES,
+    BLACK_TOT_BENES,
+    API_TOT_BENES,
+    HSPNC_TOT_BENES,
+    NATIND_TOT_BENES,
+    OTHR_TOT_BENES,
+
+    AGE_LT_25_BENES,
+    AGE_25_TO_44_BENES,
+    AGE_45_TO_64_BENES,
+    AGE_65_TO_69_BENES,
+    AGE_70_TO_74_BENES,
+    AGE_75_TO_79_BENES,
+    AGE_80_TO_84_BENES,
+    AGE_85_TO_89_BENES,
+    AGE_90_TO_94_BENES,
+    AGE_GT_94_BENES,
+
+    DUAL_TOT_BENES,
+    FULL_DUAL_TOT_BENES,
+    PART_DUAL_TOT_BENES,
+    NODUAL_TOT_BENES,
+
+    QMB_ONLY_BENES,
+    QMB_PLUS_BENES,
+    SLMB_ONLY_BENES,
+    SLMB_PLUS_BENES,
+    QDWI_QI_BENES,
+    OTHR_FULL_DUAL_MDCD_BENES,
+
+    A_B_TOT_BENES,
+    A_B_ORGNL_MDCR_BENES,
+    A_B_MA_AND_OTH_BENES,
+
+    A_TOT_BENES,
+    A_ORGNL_MDCR_BENES,
+    A_MA_AND_OTH_BENES,
+
+    B_TOT_BENES,
+    B_ORGNL_MDCR_BENES,
+    B_MA_AND_OTH_BENES,
+
+    PRSCRPTN_DRUG_TOT_BENES,
+    PRSCRPTN_DRUG_PDP_BENES,
+    PRSCRPTN_DRUG_MAPD_BENES,
+    PRSCRPTN_DRUG_DEEMED_ELIGIBLE_FULL_LIS_BENES,
+    PRSCRPTN_DRUG_FULL_LIS_BENES,
+    PRSCRPTN_DRUG_PARTIAL_LIS_BENES,
+    PRSCRPTN_DRUG_NO_LIS_BENES,
+
+    IsAnyValueSuppressed,
+    SuppressedValueCount,
+
+    SourceFileName
+)
+SELECT
+    r.MedicareMonthlyEnrollmentRawId,
+    r.PipelineRunId,
+
+    r.[YEAR] AS ReportingYear,
+
+    CASE r.[MONTH]
+        WHEN 'January' THEN 1
+        WHEN 'February' THEN 2
+        WHEN 'March' THEN 3
+        WHEN 'April' THEN 4
+        WHEN 'May' THEN 5
+        WHEN 'June' THEN 6
+        WHEN 'July' THEN 7
+        WHEN 'August' THEN 8
+        WHEN 'September' THEN 9
+        WHEN 'October' THEN 10
+        WHEN 'November' THEN 11
+        WHEN 'December' THEN 12
+        WHEN 'Year' THEN NULL
+    END AS ReportingMonth,
+
+    CASE
+        WHEN r.[MONTH] = 'Year' THEN NULL
+        ELSE DATEFROMPARTS
+        (
+            r.[YEAR],
+            CASE r.[MONTH]
+                WHEN 'January' THEN 1
+                WHEN 'February' THEN 2
+                WHEN 'March' THEN 3
+                WHEN 'April' THEN 4
+                WHEN 'May' THEN 5
+                WHEN 'June' THEN 6
+                WHEN 'July' THEN 7
+                WHEN 'August' THEN 8
+                WHEN 'September' THEN 9
+                WHEN 'October' THEN 10
+                WHEN 'November' THEN 11
+                WHEN 'December' THEN 12
+            END,
+            1
+        )
+    END AS ReportingPeriodStart,
+
+    CASE
+        WHEN r.[MONTH] = 'Year' THEN 1
+        ELSE 0
+    END AS IsAnnualSummary,
+
+    NULLIF(LTRIM(RTRIM(r.BENE_GEO_LVL)), '') AS GeographyLevel,
+    NULLIF(LTRIM(RTRIM(r.BENE_STATE_ABRVTN)), '') AS StateAbbreviation,
+    NULLIF(LTRIM(RTRIM(r.BENE_STATE_DESC)), '') AS StateName,
+    NULLIF(LTRIM(RTRIM(r.BENE_COUNTY_DESC)), '') AS CountyName,
+    NULLIF(LTRIM(RTRIM(r.BENE_FIPS_CD)), '') AS GeographyFips,
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.ORGNL_MDCR_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.MA_AND_OTH_BENES)), ''), '*')),
+
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGED_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGED_ESRD_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGED_NO_ESRD_BENES)), ''), '*')),
+
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.DSBLD_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.DSBLD_ESRD_AND_ESRD_ONLY_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.DSBLD_NO_ESRD_BENES)), ''), '*')),
+
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.MALE_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.FEMALE_TOT_BENES)), ''), '*')),
+
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.WHITE_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.BLACK_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.API_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.HSPNC_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.NATIND_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.OTHR_TOT_BENES)), ''), '*')),
+
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_LT_25_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_25_TO_44_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_45_TO_64_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_65_TO_69_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_70_TO_74_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_75_TO_79_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_80_TO_84_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_85_TO_89_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_90_TO_94_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_GT_94_BENES)), ''), '*')),
+
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.DUAL_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.FULL_DUAL_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PART_DUAL_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.NODUAL_TOT_BENES)), ''), '*')),
+
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.QMB_ONLY_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.QMB_PLUS_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.SLMB_ONLY_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.SLMB_PLUS_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.QDWI_QI_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.OTHR_FULL_DUAL_MDCD_BENES)), ''), '*')),
+
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.A_B_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.A_B_ORGNL_MDCR_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.A_B_MA_AND_OTH_BENES)), ''), '*')),
+
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.A_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.A_ORGNL_MDCR_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.A_MA_AND_OTH_BENES)), ''), '*')),
+
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.B_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.B_ORGNL_MDCR_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.B_MA_AND_OTH_BENES)), ''), '*')),
+
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_PDP_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_MAPD_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_DEEMED_ELIGIBLE_FULL_LIS_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_FULL_LIS_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_PARTIAL_LIS_BENES)), ''), '*')),
+    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_NO_LIS_BENES)), ''), '*')),
+        CASE
+        WHEN s.SuppressedValueCount > 0 THEN 1
+        ELSE 0
+    END AS IsAnyValueSuppressed,
+
+    s.SuppressedValueCount,
+
+    r.SourceFileName
+
+FROM raw.MedicareMonthlyEnrollment r
+
+CROSS APPLY
+(
+    SELECT
+        COUNT(*) AS SuppressedValueCount
+    FROM
+    (
+        VALUES
+            (r.TOT_BENES),
+            (r.ORGNL_MDCR_BENES),
+            (r.MA_AND_OTH_BENES),
+            (r.AGED_TOT_BENES),
+            (r.AGED_ESRD_BENES),
+            (r.AGED_NO_ESRD_BENES),
+            (r.DSBLD_TOT_BENES),
+            (r.DSBLD_ESRD_AND_ESRD_ONLY_BENES),
+            (r.DSBLD_NO_ESRD_BENES),
+            (r.MALE_TOT_BENES),
+            (r.FEMALE_TOT_BENES),
+            (r.WHITE_TOT_BENES),
+            (r.BLACK_TOT_BENES),
+            (r.API_TOT_BENES),
+            (r.HSPNC_TOT_BENES),
+            (r.NATIND_TOT_BENES),
+            (r.OTHR_TOT_BENES),
+            (r.AGE_LT_25_BENES),
+            (r.AGE_25_TO_44_BENES),
+            (r.AGE_45_TO_64_BENES),
+            (r.AGE_65_TO_69_BENES),
+            (r.AGE_70_TO_74_BENES),
+            (r.AGE_75_TO_79_BENES),
+            (r.AGE_80_TO_84_BENES),
+            (r.AGE_85_TO_89_BENES),
+            (r.AGE_90_TO_94_BENES),
+            (r.AGE_GT_94_BENES),
+            (r.DUAL_TOT_BENES),
+            (r.FULL_DUAL_TOT_BENES),
+            (r.PART_DUAL_TOT_BENES),
+            (r.NODUAL_TOT_BENES),
+            (r.QMB_ONLY_BENES),
+            (r.QMB_PLUS_BENES),
+            (r.SLMB_ONLY_BENES),
+            (r.SLMB_PLUS_BENES),
+            (r.QDWI_QI_BENES),
+            (r.OTHR_FULL_DUAL_MDCD_BENES),
+            (r.A_B_TOT_BENES),
+            (r.A_B_ORGNL_MDCR_BENES),
+            (r.A_B_MA_AND_OTH_BENES),
+            (r.A_TOT_BENES),
+            (r.A_ORGNL_MDCR_BENES),
+            (r.A_MA_AND_OTH_BENES),
+            (r.B_TOT_BENES),
+            (r.B_ORGNL_MDCR_BENES),
+            (r.B_MA_AND_OTH_BENES),
+            (r.PRSCRPTN_DRUG_TOT_BENES),
+            (r.PRSCRPTN_DRUG_PDP_BENES),
+            (r.PRSCRPTN_DRUG_MAPD_BENES),
+            (r.PRSCRPTN_DRUG_DEEMED_ELIGIBLE_FULL_LIS_BENES),
+            (r.PRSCRPTN_DRUG_FULL_LIS_BENES),
+            (r.PRSCRPTN_DRUG_PARTIAL_LIS_BENES),
+            (r.PRSCRPTN_DRUG_NO_LIS_BENES)
+    ) x(Value)
+    WHERE LTRIM(RTRIM(x.Value)) = '*'
+) s
+
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM stage.MedicareMonthlyEnrollment st
+    WHERE st.MedicareMonthlyEnrollmentRawId =
+          r.MedicareMonthlyEnrollmentRawId
+);
+GO
