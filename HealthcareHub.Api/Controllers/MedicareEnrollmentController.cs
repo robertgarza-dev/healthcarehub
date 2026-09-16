@@ -71,4 +71,17 @@ public sealed class MedicareEnrollmentController : ControllerBase
 
         return Ok(results);
     }
+    
+    [HttpGet("states")]
+    [ProducesResponseType(
+        typeof(IEnumerable<MedicareEnrollmentStateOptionDto>),
+        StatusCodes.Status200OK)]
+    public async Task<ActionResult<
+            IEnumerable<MedicareEnrollmentStateOptionDto>>>
+        GetStates()
+    {
+        var results = await _repository.GetStatesAsync();
+
+        return Ok(results);
+    }
 }

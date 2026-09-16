@@ -1,6 +1,5 @@
 ﻿import type {
     MedicareEnrollmentNationalTrend,
-    MedicareEnrollmentStateOption,
     MedicareEnrollmentStateTrend
 } from "../types/medicareEnrollment";
 
@@ -33,39 +32,6 @@ export async function getStateEnrollmentTrend(
     if (!response.ok) {
         throw new Error(
             `Failed to load state Medicare enrollment data: ${response.status}`
-        );
-    }
-
-    return response.json();
-}
-
-export async function getStateOptions():
-    Promise<MedicareEnrollmentStateOption[]> {
-
-    const response = await fetch(
-        `${apiBaseUrl}/api/medicare/enrollment/states`
-    );
-
-    if (!response.ok) {
-        throw new Error(
-            `Failed to load state options: ${response.status}`
-        );
-    }
-
-    return response.json();
-}
-
-export async function getLatestCounties(
-    stateCode: string
-): Promise<MedicareEnrollmentCountyLatest[]> {
-
-    const response = await fetch(
-        `${apiBaseUrl}/api/medicare/enrollment/counties/${stateCode}`
-    );
-
-    if (!response.ok) {
-        throw new Error(
-            `Failed to load county Medicare enrollment data: ${response.status}`
         );
     }
 
