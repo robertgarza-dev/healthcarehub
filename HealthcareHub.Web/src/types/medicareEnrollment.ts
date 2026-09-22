@@ -51,3 +51,29 @@ export interface MedicareEnrollmentCountyLatest {
 
     pipelineRunId: number;
 }
+
+export interface DataOperationsStatus {
+    dataSourceId: number;
+    sourceName: string;
+    sourceAgency: string;
+    sourceUrl: string;
+
+    program: string | null;
+    geographicGrain: string | null;
+    reportingCadence: string | null;
+
+    pipelineRunId: number;
+    reportingPeriod: string | null;
+
+    startedUtc: string;
+    completedUtc: string | null;
+
+    status: string;
+
+    rowsRead: number | null;
+    rowsInserted: number | null;
+    rowsUpdated: number | null;
+    rowsRejected: number | null;
+
+    errorMessage: string | null;
+}

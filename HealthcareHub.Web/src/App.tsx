@@ -13,14 +13,16 @@ import {
   getLatestCounties,
   getNationalEnrollmentTrend,
   getStateEnrollmentTrend,
-  getStateOptions
+  getStateOptions,
+  getMedicareEnrollmentOperationsStatus
 } from "./api/medicareEnrollmentApi";
 
 import type {
   MedicareEnrollmentCountyLatest,
   MedicareEnrollmentNationalTrend,
   MedicareEnrollmentStateOption,
-  MedicareEnrollmentStateTrend
+  MedicareEnrollmentStateTrend,
+  DataOperationsStatus
 } from "./types/medicareEnrollment";
 
 import "./App.css";
@@ -44,6 +46,20 @@ function formatMonth(dateValue: string): string {
   }).format(new Date(dateValue));
 }
 
+function formatDateTime(dateValue: string | null): string {
+  if (!dateValue) {
+    return "Not available";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  }).format(new Date(`${dateValue}Z`));
+}
+
 function App() {
   const [data, setData] = useState<EnrollmentTrend[]>([]);
 
@@ -64,6 +80,9 @@ function App() {
       showAllCounties
           ? counties
           : counties.slice(0, 10);
+
+  const [operationsStatus, setOperationsStatus] =
+      useState<DataOperationsStatus | null>(null);
 
   useEffect(() => {
     getStateOptions()
@@ -125,6 +144,17 @@ function App() {
   useEffect(() => {
     setShowAllCounties(false);
   }, [selectedRegion]);
+
+  useEffect(() => {
+    getMedicareEnrollmentOperationsStatus()
+        .then(setOperationsStatus)
+        .catch((err: unknown) => {
+          console.error(
+              "Failed to load data operations status",
+              err
+          );
+        });
+  }, []);
 
   const latest = useMemo(() => {
     return data.length > 0
@@ -348,108 +378,178 @@ function App() {
                 </div>
               </section>
 
-              {selectedRegion !== "US" &&
-                  counties.length > 0 && (
-                      <section className="county-card">
-                        <div className="section-heading">
-                          <div>
-                            <h2>
-                              Latest county enrollment
-                            </h2>
+              {selectedRegion !== "US" && counties.length > 0 && (
+                  <section className="county-card">
+                    <div className="section-heading">
+                      <div>
+                        <h2>Latest county enrollment</h2>
 
-                            <p>
-                              Latest available Medicare
-                              enrollment by county for{" "}
-                              {selectedName}.
-                            </p>
-                          </div>
-                        </div>
+                        <p>
+                          Latest available Medicare enrollment by county for{" "}
+                          {selectedName}.
+                        </p>
+                      </div>
+                    </div>
 
-                        <div className="county-table-wrapper">
-                          <table className="county-table">
-                            <thead>
-                            <tr>
-                              <th>County</th>
-                              <th>
-                                Total beneficiaries
-                              </th>
-                              <th>
-                                Original Medicare
-                              </th>
-                              <th>
-                                Medicare Advantage
-                              </th>
-                              <th>
-                                MA share
-                              </th>
+                    <div className="county-table-wrapper">
+                      <table className="county-table">
+                        <thead>
+                        <tr>
+                          <th>County</th>
+                          <th>Total beneficiaries</th>
+                          <th>Original Medicare</th>
+                          <th>Medicare Advantage</th>
+                          <th>MA share</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {displayedCounties.map((county) => (
+                            <tr key={county.fipsCode}>
+                              <td>{county.countyName}</td>
+
+                              <td>
+                                {formatNumber(
+                                    county.totalBeneficiaries
+                                )}
+                              </td>
+
+                              <td>
+                                {formatNumber(
+                                    county.originalMedicareBeneficiaries
+                                )}
+                              </td>
+
+                              <td>
+                                {formatNumber(
+                                    county.medicareAdvantageAndOtherBeneficiaries
+                                )}
+                              </td>
+
+                              <td>
+                                {county.medicareAdvantagePercent?.toFixed(2) ?? "—"}%
+                              </td>
                             </tr>
-                            </thead>
+                        ))}
+                        </tbody>
+                      </table>
 
-                            <tbody>
-                            {displayedCounties.map(
-                                (county) => (
-                                    <tr
-                                        key={
-                                          county.fipsCode
-                                        }
-                                    >
-                                      <td>
-                                        {
-                                          county.countyName
-                                        }
-                                      </td>
+                      {counties.length > 10 && (
+                          <button
+                              type="button"
+                              className="county-toggle"
+                              onClick={() =>
+                                  setShowAllCounties(
+                                      (current) => !current
+                                  )
+                              }
+                          >
+                            {showAllCounties
+                                ? "Show top 10"
+                                : `Show all ${counties.length} counties`}
+                          </button>
+                      )}
+                    </div>
+                  </section>
+              )}
 
-                                      <td>
-                                        {formatNumber(
-                                            county.totalBeneficiaries
-                                        )}
-                                      </td>
+              {operationsStatus && (
+                  <section className="operations-card">
+                    <div className="section-heading">
+                      <div>
+                        <h2>Data operations</h2>
 
-                                      <td>
-                                        {formatNumber(
-                                            county.originalMedicareBeneficiaries
-                                        )}
-                                      </td>
+                        <p>
+                          Source freshness and latest HealthcareHub ingestion status.
+                        </p>
+                      </div>
 
-                                      <td>
-                                        {formatNumber(
-                                            county.medicareAdvantageAndOtherBeneficiaries
-                                        )}
-                                      </td>
+                      <span
+                          className={`status-badge ${
+                              operationsStatus.status.toLowerCase() === "success"
+                                  ? "status-success"
+                                  : "status-warning"
+                          }`}
+                      >
+        {operationsStatus.status}
+      </span>
+                    </div>
 
-                                      <td>
-                                        {county
-                                            .medicareAdvantagePercent
-                                            ?.toFixed(
-                                                2
-                                            ) ?? "—"}
-                                        %
-                                      </td>
-                                    </tr>
-                                )
-                            )}
-                            </tbody>
-                          </table>
+                    <div className="operations-grid">
+                      <div>
+                        <span>Source</span>
+                        <strong>
+                          {operationsStatus.sourceName}
+                        </strong>
+                      </div>
 
-                          {counties.length > 10 && (
-                              <button
-                                  type="button"
-                                  className="county-toggle"
-                                  onClick={() =>
-                                      setShowAllCounties(
-                                          (current) =>
-                                              !current
-                                      )
-                                  }
-                              >
-                                {showAllCounties
-                                    ? "Show top 10"
-                                    : `Show all ${counties.length} counties`}
-                              </button>
+                      <div>
+                        <span>Agency</span>
+                        <strong>
+                          {operationsStatus.sourceAgency}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>Cadence</span>
+                        <strong>
+                          {operationsStatus.reportingCadence ?? "Not available"}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>Geographic grain</span>
+                        <strong>
+                          {operationsStatus.geographicGrain ?? "Not available"}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>Pipeline run</span>
+                        <strong>
+                          #{operationsStatus.pipelineRunId}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>Completed</span>
+                        <strong>
+                          {formatDateTime(
+                              operationsStatus.completedUtc
                           )}
-                        </div>
-                      </section>
-                  )}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>Rows processed</span>
+                        <strong>
+                          {formatNumber(
+                              operationsStatus.rowsRead
+                          )}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>Rows rejected</span>
+                        <strong>
+                          {formatNumber(
+                              operationsStatus.rowsRejected
+                          )}
+                        </strong>
+                      </div>
+                    </div>
+
+                    <div className="source-link-row">
+                      <a
+                          href={operationsStatus.sourceUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                      >
+                        View CMS source
+                      </a>
+                    </div>
+                  </section>
+              )}
             </>
         )}
       </main>

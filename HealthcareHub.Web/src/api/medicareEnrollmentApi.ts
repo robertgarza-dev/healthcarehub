@@ -71,3 +71,19 @@ export async function getLatestCounties(
 
     return response.json();
 }
+
+export async function getMedicareEnrollmentOperationsStatus():
+    Promise<DataOperationsStatus> {
+
+    const response = await fetch(
+        `${apiBaseUrl}/api/data-operations/medicare-enrollment`
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            `Failed to load data operations status: ${response.status}`
+        );
+    }
+
+    return response.json();
+}
