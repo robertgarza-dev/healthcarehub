@@ -165,70 +165,437 @@ SELECT
     NULLIF(LTRIM(RTRIM(r.BENE_STATE_DESC)), '') AS StateName,
     NULLIF(LTRIM(RTRIM(r.BENE_COUNTY_DESC)), '') AS CountyName,
     NULLIF(LTRIM(RTRIM(r.BENE_FIPS_CD)), '') AS GeographyFips,
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.ORGNL_MDCR_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.MA_AND_OTH_BENES)), ''), '*')),
 
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGED_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGED_ESRD_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGED_NO_ESRD_BENES)), ''), '*')),
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.TOT_BENES)), ''), '*')
+        )
+    ),
 
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.DSBLD_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.DSBLD_ESRD_AND_ESRD_ONLY_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.DSBLD_NO_ESRD_BENES)), ''), '*')),
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.ORGNL_MDCR_BENES)), ''), '*')
+        )
+    ),
 
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.MALE_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.FEMALE_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.MA_AND_OTH_BENES)), ''), '*')
+        )
+    ),
 
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.WHITE_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.BLACK_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.API_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.HSPNC_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.NATIND_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.OTHR_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.AGED_TOT_BENES)), ''), '*')
+        )
+    ),
 
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_LT_25_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_25_TO_44_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_45_TO_64_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_65_TO_69_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_70_TO_74_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_75_TO_79_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_80_TO_84_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_85_TO_89_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_90_TO_94_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_GT_94_BENES)), ''), '*')),
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.AGED_ESRD_BENES)), ''), '*')
+        )
+    ),
 
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.DUAL_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.FULL_DUAL_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PART_DUAL_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.NODUAL_TOT_BENES)), ''), '*')),
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.AGED_NO_ESRD_BENES)), ''), '*')
+        )
+    ),
 
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.QMB_ONLY_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.QMB_PLUS_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.SLMB_ONLY_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.SLMB_PLUS_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.QDWI_QI_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.OTHR_FULL_DUAL_MDCD_BENES)), ''), '*')),
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.DSBLD_TOT_BENES)), ''), '*')
+        )
+    ),
 
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.A_B_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.A_B_ORGNL_MDCR_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.A_B_MA_AND_OTH_BENES)), ''), '*')),
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.DSBLD_ESRD_AND_ESRD_ONLY_BENES)), ''), '*')
+        )
+    ),
 
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.A_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.A_ORGNL_MDCR_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.A_MA_AND_OTH_BENES)), ''), '*')),
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.DSBLD_NO_ESRD_BENES)), ''), '*')
+        )
+    ),
 
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.B_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.B_ORGNL_MDCR_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.B_MA_AND_OTH_BENES)), ''), '*')),
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.MALE_TOT_BENES)), ''), '*')
+        )
+    ),
 
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_TOT_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_PDP_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_MAPD_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_DEEMED_ELIGIBLE_FULL_LIS_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_FULL_LIS_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_PARTIAL_LIS_BENES)), ''), '*')),
-    TRY_CONVERT(BIGINT, NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_NO_LIS_BENES)), ''), '*')),
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.FEMALE_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.WHITE_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.BLACK_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.API_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.HSPNC_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.NATIND_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.OTHR_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_LT_25_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_25_TO_44_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_45_TO_64_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_65_TO_69_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_70_TO_74_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_75_TO_79_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_80_TO_84_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_85_TO_89_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_90_TO_94_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.AGE_GT_94_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.DUAL_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.FULL_DUAL_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.PART_DUAL_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.NODUAL_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.QMB_ONLY_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.QMB_PLUS_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.SLMB_ONLY_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.SLMB_PLUS_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.QDWI_QI_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.OTHR_FULL_DUAL_MDCD_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.A_B_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.A_B_ORGNL_MDCR_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.A_B_MA_AND_OTH_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.A_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.A_ORGNL_MDCR_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.A_MA_AND_OTH_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.B_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.B_ORGNL_MDCR_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.B_MA_AND_OTH_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_TOT_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_PDP_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_MAPD_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(
+                NULLIF(
+                    LTRIM(RTRIM(r.PRSCRPTN_DRUG_DEEMED_ELIGIBLE_FULL_LIS_BENES)),
+                    ''
+                ),
+                '*'
+            )
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_FULL_LIS_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_PARTIAL_LIS_BENES)), ''), '*')
+        )
+    ),
+
+    TRY_CONVERT(
+        BIGINT,
+        TRY_CONVERT(
+            DECIMAL(38, 4),
+            NULLIF(NULLIF(LTRIM(RTRIM(r.PRSCRPTN_DRUG_NO_LIS_BENES)), ''), '*')
+        )
+    ),
+
     CASE
         WHEN s.SuppressedValueCount > 0 THEN 1
         ELSE 0
