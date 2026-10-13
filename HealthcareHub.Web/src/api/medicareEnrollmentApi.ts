@@ -1,4 +1,6 @@
 ﻿import type {
+    DataOperationsStatus,
+    MedicareEnrollmentCountyLatest,
     MedicareEnrollmentNationalTrend,
     MedicareEnrollmentStateOption,
     MedicareEnrollmentStateTrend
