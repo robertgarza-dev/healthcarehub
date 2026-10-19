@@ -1,0 +1,122 @@
+name: Medicare Source Monitor
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    # Check twice per week for a new or revised CMS release.
+    # GitHub Actions cron uses UTC.
+    - cron: "17 15 * * 1,4"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-medicare-release:
+    name: Check Medicare Monthly Enrollment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check CMS release
+        id: check
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          $cmsJson =
+              ./scripts/Check-MedicareMonthlyEnrollmentRelease.ps1 -AsJson
+
+          $cms =
+              $cmsJson |
+              ConvertFrom-Json
+
+          $processed =
+              Get-Content ./monitoring/medicare-monthly-enrollment.json |
+              ConvertFrom-Json
+
+          $hasChanged =
+              $cms.ReportingPeriodStart -ne $processed.reportingPeriodStart -or
+              $cms.ReportingPeriodEnd -ne $processed.reportingPeriodEnd -or
+              $cms.SourceModifiedDate -ne $processed.sourceModifiedDate
+
+          Write-Host ""
+          Write-Host "CMS release:"
+          Write-Host "  Period:   $($cms.ReportingPeriodStart) - $($cms.ReportingPeriodEnd)"
+          Write-Host "  Modified: $($cms.SourceModifiedDate)"
+          Write-Host ""
+          Write-Host "HealthcareHub processed release:"
+          Write-Host "  Period:   $($processed.reportingPeriodStart) - $($processed.reportingPeriodEnd)"
+          Write-Host "  Modified: $($processed.sourceModifiedDate)"
+          Write-Host ""
+          Write-Host "Change detected: $hasChanged"
+
+          "changed=$($hasChanged.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+          "period_start=$($cms.ReportingPeriodStart)" >> $env:GITHUB_OUTPUT
+          "period_end=$($cms.ReportingPeriodEnd)" >> $env:GITHUB_OUTPUT
+          "modified=$($cms.SourceModifiedDate)" >> $env:GITHUB_OUTPUT
+          "download_url=$($cms.DownloadUrl)" >> $env:GITHUB_OUTPUT
+
+      - name: Create release notification issue
+        if: steps.check.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        env:
+          PERIOD_START: ${{ steps.check.outputs.period_start }}
+          PERIOD_END: ${{ steps.check.outputs.period_end }}
+          MODIFIED: ${{ steps.check.outputs.modified }}
+          DOWNLOAD_URL: ${{ steps.check.outputs.download_url }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const title =
+              `CMS Medicare Monthly Enrollment release detected: ${process.env.PERIOD_START}`;
+
+            const { data: issues } =
+              await github.rest.issues.listForRepo({
+                owner,
+                repo,
+                state: "open",
+                per_page: 100
+              });
+
+            const existingIssue =
+              issues.find(issue => issue.title === title);
+
+            if (existingIssue) {
+              core.info(
+                `Notification issue already exists: #${existingIssue.number}`
+              );
+              return;
+            }
+
+            const body = [
+              "## New or revised CMS source detected",
+              "",
+              "HealthcareHub's scheduled source monitor detected a Medicare Monthly Enrollment distribution that does not match the currently processed release.",
+              "",
+              `**Reporting period:** ${process.env.PERIOD_START} through ${process.env.PERIOD_END}`,
+              `**CMS modified date:** ${process.env.MODIFIED}`,
+              "",
+              `**Source file:** ${process.env.DOWNLOAD_URL}`,
+              "",
+              "### Next step",
+              "",
+              "Run the HealthcareHub Medicare ingestion pipeline and validate the new or revised distribution before updating the processed-release marker.",
+              "",
+              "_This issue was created automatically by the Medicare Source Monitor workflow._"
+            ].join("\n");
+
+            const { data: issue } =
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body
+              });
+
+            core.info(`Created issue #${issue.number}`);
