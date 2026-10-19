@@ -42,3 +42,10 @@ Thumbs.db
 # Local source data
 data/
 publish/
+
+# Deployment outputs
+publish/
+
+# Test / coverage outputs
+TestResults/
+coverage/
