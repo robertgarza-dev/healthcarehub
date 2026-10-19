@@ -473,7 +473,7 @@ function App() {
                       >
         {operationsStatus.status}
       </span>
-                    </div>
+      </div>
 
                     <div className="operations-grid">
                       <div>
@@ -551,7 +551,21 @@ function App() {
                   </section>
               )}
             </>
+            
         )}
+        <footer className="site-footer">
+          <p>
+            HealthcareHub uses publicly available data from the
+            Centers for Medicare & Medicaid Services (CMS).
+          </p>
+
+          <p>
+            Medicare Monthly Enrollment · Latest reporting period:{" "}
+            {latest
+                ? formatMonth(latest.reportingPeriodStart)
+                : "Not available"}
+          </p>
+        </footer>
       </main>
   );
 }
